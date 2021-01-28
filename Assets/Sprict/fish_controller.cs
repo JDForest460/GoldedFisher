@@ -5,12 +5,16 @@ using UnityEngine;
 public class fish_controller : MonoBehaviour
 {
     public Rigidbody2D rb_fish;
+    public Rigidbody2D rb_boat;
     public Transform left_bound;
     public Transform right_bound;
+    public BoxCollider2D coll_fish;
     private bool face_left = true;
     public float fish_speed;
     private float left_x;
     private float right_x;
+    private bool is_cauthed = false;
+    private GameObject hook;
     // Start is called before the first frame update
     void Start()
     {
@@ -24,7 +28,8 @@ public class fish_controller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        fish_move();
+        if (!is_cauthed) fish_move();
+        if (is_cauthed) pull_fish();
     }
     void fish_move()
 	{
@@ -53,4 +58,27 @@ public class fish_controller : MonoBehaviour
             }
         }
 	}
+    void pull_fish()
+	{   
+        if(rb_fish.transform.position.y >= rb_boat.transform.position.y)
+		{
+            Destroy(rb_fish.gameObject);
+            rb_boat.gameObject.GetComponent<boat_controller>().add_score(1);
+
+        }
+        rb_fish.transform.position = hook.GetComponent<Rigidbody2D>().transform.position;
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.tag == "hook" && !rb_boat.gameObject.GetComponent<boat_controller>().get_pullstate())
+        {
+            
+            // collision.gameObject.transform.position
+            is_cauthed = true;
+            hook = collision.gameObject;
+            rb_fish.velocity = new Vector2(0, 0);
+            
+        }
+    }
+
 }

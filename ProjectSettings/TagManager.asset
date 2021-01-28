@@ -3,7 +3,9 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - fish
+  - hook
   layers:
   - Default
   - TransparentFX
@@ -13,7 +15,7 @@ TagManager:
   - UI
   - 
   - 
-  - 
+  - boat
   - 
   - 
   - 
@@ -44,6 +46,9 @@ TagManager:
   - name: background
     uniqueID: 2897947323
     locked: 0
-  - name: objects
+  - name: fish
     uniqueID: 2901527035
+    locked: 0
+  - name: boat
+    uniqueID: 583584809
     locked: 0

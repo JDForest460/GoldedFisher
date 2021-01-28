@@ -1,14 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 public class boat_controller : MonoBehaviour
 {
-    public Rigidbody2D rb_boat;
+
     public Rigidbody2D rb_bow;
     public Rigidbody2D rb_hook;
     public Transform hook_top;
     public LineRenderer fish_line;
+    public Text ui_score;
+    private int score = 0;
+
     public float bow_rotate_speed;
     public float bow_shot_speed;
     public float line_len;
@@ -25,6 +28,7 @@ public class boat_controller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        score_control();
         draw_line();
         if(!stop_rotate) rotate_bow();
         shot_hook();
@@ -98,6 +102,7 @@ public class boat_controller : MonoBehaviour
 		}
 		if(is_pull)
 		{
+            
             //Debug.Log(rb_hook.transform.localPosition.y);
             if (Vector3.Distance(hook_top.position, rb_hook.position) >= 0.1 && rb_hook.transform.localPosition.y <=0)
             {
@@ -114,4 +119,16 @@ public class boat_controller : MonoBehaviour
 
         }
 	}
+    public bool get_pullstate()
+	{
+        return is_pull;
+	}
+    void score_control()
+	{
+        ui_score.text = score.ToString();
+    }
+    public void add_score(int new_score)
+	{
+        score += new_score;
+    }
 }

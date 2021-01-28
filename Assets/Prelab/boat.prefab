@@ -11,9 +11,10 @@ GameObject:
   - component: {fileID: 2175197040564074529}
   - component: {fileID: 2175197040564074528}
   - component: {fileID: 2175197040564074530}
+  - component: {fileID: 6093175759613401266}
   m_Layer: 0
   m_Name: hook
-  m_TagString: Untagged
+  m_TagString: hook
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -104,6 +105,32 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!61 &6093175759613401266
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2175197040564074535}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.01096651, y: -0.01096642}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 0.2688983, y: 0.63444924}
+  m_EdgeRadius: 0
 --- !u!1 &2175197040653084040
 GameObject:
   m_ObjectHideFlags: 0
@@ -255,14 +282,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c934c807546a26c40bf64fac23a2d7a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb_boat: {fileID: 2175197041176558955}
   rb_bow: {fileID: 2175197042173782886}
   rb_hook: {fileID: 2175197040564074530}
   hook_top: {fileID: 2175197040653084041}
   fish_line: {fileID: 2175197041176558954}
   bow_rotate_speed: 40
-  bow_shot_speed: 5
-  line_len: 5
+  bow_shot_speed: 9
+  line_len: 9
 --- !u!120 &2175197041176558954
 LineRenderer:
   m_ObjectHideFlags: 0
