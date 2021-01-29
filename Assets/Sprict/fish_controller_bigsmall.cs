@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class fish_controller : MonoBehaviour
+public class fish_controller_bigsmall : MonoBehaviour
 {
     public Rigidbody2D rb_fish;
     public Rigidbody2D rb_boat;
@@ -16,6 +16,8 @@ public class fish_controller : MonoBehaviour
     private float right_x;
     private bool is_cauthed = false;
     private GameObject hook;
+    private bool is_small = false;
+    private float switch_time = 0f;
     // Start is called before the first frame update
     void Start()
     {
@@ -30,9 +32,16 @@ public class fish_controller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        switch_time += Time.deltaTime;
+        if(switch_time >= 2)
+		{
+            switch_time = 0;
+            if(!is_cauthed) fish_changesize();
+        }
+        
         if (!is_cauthed) fish_move();
-
         if (is_cauthed) pull_fish();
+        
     }
     void fish_move()
     {
@@ -61,7 +70,23 @@ public class fish_controller : MonoBehaviour
             }
         }
     }
-
+    void fish_changesize()
+	{
+		if (!is_small)
+		{
+			if (face_left) rb_fish.transform.localScale = new Vector3(0.5f, 0.5f,1f);
+            else rb_fish.transform.localScale = new Vector3(-0.5f, 0.5f, 1f);
+            
+            is_small = true;
+		}
+		else
+		{
+            if (face_left) rb_fish.transform.localScale = new Vector3(1f,1f, 1f);
+            else rb_fish.transform.localScale = new Vector3(-1f, 1f, 1f);
+            
+            is_small = false;
+        }
+	}
     void pull_fish()
     {
         if (rb_fish.transform.position.y >= rb_boat.transform.position.y)
@@ -74,7 +99,7 @@ public class fish_controller : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.tag == "hook" && !rb_boat.gameObject.GetComponent<boat_controller>().get_pullstate())
+        if (is_small && collision.tag == "hook" && !rb_boat.gameObject.GetComponent<boat_controller>().get_pullstate())
         {
 
             // collision.gameObject.transform.position
