@@ -181,9 +181,10 @@ MonoBehaviour:
   rb_boat: {fileID: 0}
   left_bound: {fileID: 2648775511990970623}
   right_bound: {fileID: 2648775512573390450}
+  game_manage: {fileID: 0}
   coll_fish: {fileID: 8897464986307246560}
-  fish_value: 3
-  fish_speed: 300
+  fish_value: 1
+  fish_speed: 50
 --- !u!61 &8897464986307246560
 BoxCollider2D:
   m_ObjectHideFlags: 0

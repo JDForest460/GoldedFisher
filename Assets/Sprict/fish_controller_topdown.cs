@@ -10,6 +10,7 @@ public class fish_controller_topdown : MonoBehaviour
     public Transform right_bound;
     public Transform top_bound;
     public Transform bot_bound;
+    public GameObject game_manage;
     public BoxCollider2D coll_fish;
     public int fish_value;
     private bool face_left = true;
@@ -36,7 +37,7 @@ public class fish_controller_topdown : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         if (!is_cauthed)
         {
@@ -47,11 +48,11 @@ public class fish_controller_topdown : MonoBehaviour
     }
     void fish_move()
 	{
-        float rand_speed = Random.Range(0f, 500f);
+  
 
         if (face_left)
 		{
-            rb_fish.velocity = new Vector2( (-fish_speed - rand_speed) * Time.deltaTime, rb_fish.velocity.y);
+            rb_fish.velocity = new Vector2( -fish_speed * Time.fixedDeltaTime, rb_fish.velocity.y);
 
             //Debug.Log(-fish_speed + rand_speed);
             if(rb_fish.transform.position.x < left_x)
@@ -63,7 +64,7 @@ public class fish_controller_topdown : MonoBehaviour
 		else
 		{
 
-            rb_fish.velocity = new Vector2( (fish_speed + rand_speed) * Time.deltaTime, rb_fish.velocity.y);
+            rb_fish.velocity = new Vector2( fish_speed  * Time.fixedDeltaTime, rb_fish.velocity.y);
             //Debug.Log(-fish_speed + rand_speed);
             if (rb_fish.transform.position.x > right_x)
             {
@@ -74,10 +75,10 @@ public class fish_controller_topdown : MonoBehaviour
 	}
     void fish_move_topbot()
 	{
-        float rand_speed = Random.Range(0f, 500f);
+ 
         if (go_down)
         {
-            rb_fish.velocity = new Vector2(rb_fish.velocity.x,(-fish_speed - rand_speed) * Time.deltaTime);
+            rb_fish.velocity = new Vector2(rb_fish.velocity.x,-fish_speed  * Time.fixedDeltaTime);
 
             //Debug.Log(-fish_speed + rand_speed);
             if (rb_fish.transform.position.y < left_x)
@@ -89,7 +90,7 @@ public class fish_controller_topdown : MonoBehaviour
         else
         {
 
-            rb_fish.velocity = new Vector2(rb_fish.velocity.x,(fish_speed + rand_speed) * Time.deltaTime);
+            rb_fish.velocity = new Vector2(rb_fish.velocity.x,fish_speed  * Time.fixedDeltaTime);
             //Debug.Log(-fish_speed + rand_speed);
             if (rb_fish.transform.position.x > right_x)
             {
@@ -103,7 +104,7 @@ public class fish_controller_topdown : MonoBehaviour
         if(rb_fish.transform.position.y >= rb_boat.transform.position.y)
 		{
             Destroy(rb_fish.gameObject);
-            rb_boat.gameObject.GetComponent<boat_controller>().add_score(fish_value);
+            game_manage.GetComponent<game_controller>().add_score(fish_value); ;
 
         }
         rb_fish.transform.position = hook.GetComponent<Rigidbody2D>().transform.position;

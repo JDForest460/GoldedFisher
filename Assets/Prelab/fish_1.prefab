@@ -211,9 +211,11 @@ MonoBehaviour:
   right_bound: {fileID: 3160340983025570610}
   top_bound: {fileID: 3089446004101338754}
   bot_bound: {fileID: 4185895671782729617}
+  game_manage: {fileID: 5428941018207758455, guid: 48c40910f76008245b078ef9f82018ee,
+    type: 3}
   coll_fish: {fileID: 8386752994577220768}
-  fish_value: 4
-  fish_speed: 300
+  fish_value: 2
+  fish_speed: 50
 --- !u!1 &3160340983025570621
 GameObject:
   m_ObjectHideFlags: 0

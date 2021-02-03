@@ -9,7 +9,9 @@ public class fish_controller_bigsmall : MonoBehaviour
     public Transform left_bound;
     public Transform right_bound;
     public BoxCollider2D coll_fish;
+    public GameObject game_manage;
     public int fish_value;
+    public AudioSource audio_pufffish;
     private bool face_left = true;
     public float fish_speed;
     private float left_x;
@@ -29,11 +31,15 @@ public class fish_controller_bigsmall : MonoBehaviour
 
     }
 
-    // Update is called once per frame
-    void Update()
+	// Update is called once per frame
+	private void Update()
+	{
+		
+	}
+	void FixedUpdate()
     {
-        switch_time += Time.deltaTime;
-        if(switch_time >= 2)
+        switch_time += Time.fixedDeltaTime;
+        if(switch_time >= 3)
 		{
             switch_time = 0;
             if(!is_cauthed) fish_changesize();
@@ -43,29 +49,28 @@ public class fish_controller_bigsmall : MonoBehaviour
         if (is_cauthed) pull_fish();
         
     }
-    void fish_move()
+	void fish_move()
     {
-        float rand_speed = Random.Range(0f, 500f);
 
         if (face_left)
         {
-            rb_fish.velocity = new Vector2((-fish_speed - rand_speed) * Time.deltaTime, rb_fish.velocity.y);
+            rb_fish.velocity = new Vector2(-fish_speed * Time.fixedDeltaTime, rb_fish.velocity.y);
 
             //Debug.Log(-fish_speed + rand_speed);
             if (rb_fish.transform.position.x < left_x)
             {
-                rb_fish.transform.localScale = new Vector3(-1, 1, 1);
+                rb_fish.transform.localScale = new Vector3(-rb_fish.transform.localScale.x, rb_fish.transform.localScale.y, 1);
                 face_left = false;
             }
         }
         else
         {
 
-            rb_fish.velocity = new Vector2((fish_speed + rand_speed) * Time.deltaTime, rb_fish.velocity.y);
+            rb_fish.velocity = new Vector2(fish_speed  * Time.fixedDeltaTime, rb_fish.velocity.y);
             //Debug.Log(-fish_speed + rand_speed);
             if (rb_fish.transform.position.x > right_x)
             {
-                transform.localScale = new Vector3(1, 1, 1);
+                transform.localScale = new Vector3(-rb_fish.transform.localScale.x, rb_fish.transform.localScale.y, 1);
                 face_left = true;
             }
         }
@@ -92,7 +97,9 @@ public class fish_controller_bigsmall : MonoBehaviour
         if (rb_fish.transform.position.y >= rb_boat.transform.position.y)
         {
             Destroy(rb_fish.gameObject);
-            rb_boat.gameObject.GetComponent<boat_controller>().add_score(fish_value);
+
+            game_manage.GetComponent<game_controller>().add_score(fish_value);
+            
 
         }
         rb_fish.transform.position = hook.GetComponent<Rigidbody2D>().transform.position;
@@ -107,6 +114,15 @@ public class fish_controller_bigsmall : MonoBehaviour
             hook = collision.gameObject;
             rb_fish.velocity = new Vector2(0, 0);
 
+		}
+		if (!rb_boat.gameObject.GetComponent<boat_controller>().get_ispull())
+		{
+            if (!is_small && is_cauthed == false)
+            {
+                rb_boat.gameObject.GetComponent<boat_controller>().stop_shoot();
+                audio_pufffish.Play();
+            }
         }
+
     }
 }
