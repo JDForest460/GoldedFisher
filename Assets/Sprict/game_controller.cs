@@ -15,6 +15,7 @@ public class game_controller : MonoBehaviour
     public GameObject fish_2;
     public GameObject fish_3;
     public Rigidbody2D rb_boat;
+    public GameObject main_ui;
     private GameObject[] fish_table;
     public int score_now;
     private float time_remaining;
@@ -23,8 +24,8 @@ public class game_controller : MonoBehaviour
     public GameObject top_left, bot_right;
     private float min_x, min_y, max_x, max_y;
     public int max_score;
-    private int total_score = 0;
-    private int level = 1;
+    private int total_score;
+    private int level;
     private int target_score;
     private bool do_spawn = true;
     private int max_random ;
@@ -32,6 +33,11 @@ public class game_controller : MonoBehaviour
 
     void Start()
     {
+        level = data_controller.get_level();
+        target_score = score_now + score_perlevel;
+        score_now = data_controller.get_score();
+
+
         min_x = top_left.transform.position.x;
         max_x = bot_right.transform.position.x;
         min_y = top_left.transform.position.y;
@@ -39,22 +45,47 @@ public class game_controller : MonoBehaviour
         max_random = 20;
         fish_table = new GameObject[] { fish_0, fish_1 , fish_2 , fish_3 };
         time_remaining = time_perlevel;
-        target_score = score_perlevel;
-        //Debug.Log("pass level " + level.ToString() + ", this level's pass score is: " + target_score.ToString());
+        target_score = level * score_perlevel;
+
         text_information.text = "level#" + level.ToString() +" this level's pass score is: " + target_score.ToString();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (time_remaining <= 0) level_controll();
+        if (time_remaining >= time_perlevel) news_controller();
         if(do_spawn) spwan_fish();
         time_control();
         score_control();
-        if (time_remaining <= 0) level_controll();
+ 
+    }
+    void news_controller()
+	{
+        //Debug.Log("news");
+        if(level == 1)
+		{
+            main_ui.GetComponent<main_ui_controller>().new_feature(1);
+        }
+        if (level == 2)
+        {
+            max_random = 90;
+            main_ui.GetComponent<main_ui_controller>().new_feature(2);
+        }
+        if (level == 3)
+        {
+            max_random = 120;
+            main_ui.GetComponent<main_ui_controller>().new_feature(3);
+        }
+        if (level == 4)
+        {
+            max_random = 140;
+            main_ui.GetComponent<main_ui_controller>().new_feature(4);
+        }
     }
     void level_controll()
 	{
-        if(score_now < target_score)
+        if (score_now < target_score)
 		{
             //Debug.Log("game end! final score is:" + score_now.ToString());
             text_information.text = "game end! final score is:" + score_now.ToString();
@@ -64,15 +95,11 @@ public class game_controller : MonoBehaviour
 		}
 		else
 		{
+
             level += 1;
-            if (level == 2) max_random = 90;
-            if (level == 3) max_random = 120;
-            if (level == 4) max_random = 140;
-            target_score = score_now + score_perlevel;
-            //Debug.Log("pass level " + level.ToString() + "this level's pass score is: " + target_score.ToString());
-            text_information.text = "level#" + level.ToString() + " this level's pass score is: " + target_score.ToString();
-            time_remaining = time_perlevel;
-            do_spawn = true;
+            data_controller.set_level(level);
+            data_controller.set_score(score_now);
+            SceneManager.LoadScene("main");
         }
 
 	}

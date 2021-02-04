@@ -117,7 +117,7 @@ public class fish_controller_bigsmall : MonoBehaviour
 		}
 		if (!rb_boat.gameObject.GetComponent<boat_controller>().get_ispull())
 		{
-            if (!is_small && is_cauthed == false)
+            if (!is_small && collision.tag == "hook" && is_cauthed == false)
             {
                 rb_boat.gameObject.GetComponent<boat_controller>().stop_shoot();
                 audio_pufffish.Play();

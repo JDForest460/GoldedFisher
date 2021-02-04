@@ -11,9 +11,15 @@ public class boat_controller : MonoBehaviour
     public LineRenderer fish_line;
     public Transform puse_top_left;
     public Transform puse_bot_right;
+    public Sprite bow_0;
+    public Sprite bow_1;
+    public Sprite bow_2;
+    public SpriteRenderer sprite_bow;
     public float bow_rotate_speed;
     public float bow_shot_speed;
-    public float line_len;
+    public float max_line_len;
+    public float pull_bow_force;
+    private float line_len;
     private bool go_right = true;
     private bool stop_rotate = false;
     private bool is_shot = false;
@@ -23,13 +29,12 @@ public class boat_controller : MonoBehaviour
     private float bot_right_x;
     private float bot_right_y;
     private bool is_puse;
+    private Vector3 position_before_shoot;
     // Start is called before the first frame update
     void Start()
     {
-        top_left_x = puse_top_left.position.x;
-        top_left_y = puse_top_left.position.y;
-        bot_right_x = puse_bot_right.position.x;
-        bot_right_y = puse_bot_right.position.y;
+        line_len = 1;
+        get_PuseButtonArea();
     }
 
     // Update is called once per frame
@@ -38,14 +43,52 @@ public class boat_controller : MonoBehaviour
         if(!is_puse)
 		{
             draw_line();
-            if (!stop_rotate) rotate_bow();
-            shot_hook();
+            //if (!stop_rotate) auto_rotate_bow();
+            if (Input.GetMouseButton(0) && !mouse_isinbutton() && !is_shot && ! is_pull)
+            {
+                rotate_bow();
+                pull_bow();
+            }
+            if (Input.GetMouseButtonUp(0) && line_len > 1)
+            {
+                shot_hook();
+                sprite_bow.sprite = bow_0;
+                //Debug.Log("mouse up");
+            }
+            moving_hook();
+
         }
  
+    }
+    void pull_bow()
+	{
+        if (line_len <= max_line_len)
+        {
+            line_len += pull_bow_force * Time.deltaTime;
+            if(line_len <  max_line_len / 3){
+                sprite_bow.sprite = bow_0;
+            }
+			else if(line_len < max_line_len * 2 / 3)
+            {
+                sprite_bow.sprite = bow_1;
+			}
+			else
+			{
+                sprite_bow.sprite = bow_2;
+            }
+        }
+    }
+    void get_PuseButtonArea()
+	{
+        top_left_x = puse_top_left.position.x;
+        top_left_y = puse_top_left.position.y;
+        bot_right_x = puse_bot_right.position.x;
+        bot_right_y = puse_bot_right.position.y;
     }
     bool mouse_isinbutton()
 	{
         Vector2 mouse_position = Input.mousePosition;
+        get_PuseButtonArea();
         if(mouse_position.x > top_left_x && mouse_position.x < bot_right_x && mouse_position.y < top_left_y && mouse_position.y > bot_right_y)
 		{
             return true;
@@ -56,6 +99,20 @@ public class boat_controller : MonoBehaviour
 		}
 	}
     void rotate_bow()
+	{
+        Vector3 screenPos = Camera.main.WorldToScreenPoint(transform.position);
+        Vector3 mousePosOnScreen = Input.mousePosition;
+        mousePosOnScreen.z = screenPos.z;
+        Vector3 mousePosInWorld = Camera.main.ScreenToWorldPoint(mousePosOnScreen);
+        Vector2 mouse_vector = new Vector3(rb_bow.transform.position.x - mousePosInWorld.x, rb_bow.transform.position.y - mousePosInWorld.y);
+
+        rb_bow.transform.up = mouse_vector;
+
+        //Debug.Log("mouse position is" + rb_bow.transform.position.x + ","+ rb_bow.transform.position.y);
+
+
+    }
+    void auto_rotate_bow()
 	{
         float angel_now = Vector3.Angle(rb_bow.transform.up, Vector3.right);
         // Debug.Log(angel_now);
@@ -94,27 +151,24 @@ public class boat_controller : MonoBehaviour
         fish_line.SetPosition(1, rb_hook.transform.position);
     }
     void shot_hook()
-	{
-        Vector3 position_before_shoot = new Vector3();
-        if (!is_shot && !is_pull)
+    {
+
+
+        if (!is_shot && !is_pull && !is_puse && !mouse_isinbutton())
+        {
+            //Debug.Log("click left mouse");
+            stop_rotate = true;
+            is_shot = true;
+
+		}
+		else
 		{
-            if (Input.GetMouseButtonDown(0))
-            {
-				//Debug.Log("click left mouse");
-				if (!mouse_isinbutton())
-				{
-                    stop_rotate = true;
-                    is_shot = true;
-                    position_before_shoot = rb_hook.transform.localPosition;
-				}
-				else
-				{
-                    Debug.Log("in button!!");
-                }
-            }
+            // Debug.Log("cant shoot!!");
         }
 
-        
+    } 
+    void moving_hook() 
+    {
         if (is_shot)
         {
  
@@ -142,11 +196,10 @@ public class boat_controller : MonoBehaviour
                 rb_hook.transform.localPosition = position_before_shoot;
                 is_pull = false;
                 stop_rotate = false;
-			}
-
-
+                line_len = 1;
+            }
         }
-	}
+    }
     public bool get_pullstate()
 	{
         return is_pull;
