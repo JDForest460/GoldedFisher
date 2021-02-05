@@ -21,7 +21,7 @@ public class boat_controller : MonoBehaviour
     public float pull_bow_force;
     private float line_len;
     private bool go_right = true;
-    private bool stop_rotate = false;
+    //private bool stop_rotate = false;
     private bool is_shot = false;
     private bool is_pull = false;
     private float top_left_x;
@@ -157,7 +157,7 @@ public class boat_controller : MonoBehaviour
         if (!is_shot && !is_pull && !is_puse && !mouse_isinbutton())
         {
             //Debug.Log("click left mouse");
-            stop_rotate = true;
+            //stop_rotate = true;
             is_shot = true;
 
 		}
@@ -195,7 +195,7 @@ public class boat_controller : MonoBehaviour
 			{
                 rb_hook.transform.localPosition = position_before_shoot;
                 is_pull = false;
-                stop_rotate = false;
+                //stop_rotate = false;
                 line_len = 1;
             }
         }
@@ -217,4 +217,22 @@ public class boat_controller : MonoBehaviour
 	{
         is_puse = i;
 	}
+    public void set_buff(int which)
+	{
+        if (which == 1) // speed buff
+        {
+            //Debug.Log("buy buff_speed");
+            bow_shot_speed = 2 * bow_shot_speed;
+        }
+        if (which == 2) // size buff
+        {
+            //Debug.Log("buy buff_size");
+            rb_hook.transform.localScale = new Vector2(1.5f, 1.5f);
+        }
+        if (which == 3) // power buff
+        {
+            //Debug.Log("buy buff_power");
+            pull_bow_force = 2 * pull_bow_force;
+        }
+    }
 }

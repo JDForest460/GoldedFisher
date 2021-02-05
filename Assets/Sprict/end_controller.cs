@@ -18,7 +18,12 @@ public class end_controller : MonoBehaviour
     }
     public void retry()
 	{
-       //bug.Log("retury");
+        //bug.Log("retury");
+        data_controller.set_score(0);
+        data_controller.set_level(1);
+        data_controller.set_buff(1, false);
+        data_controller.set_buff(2, false);
+        data_controller.set_buff(3, false);
         SceneManager.LoadScene("main");
     }
     public void QuitGame()

@@ -25,24 +25,26 @@ public class game_controller : MonoBehaviour
     private float min_x, min_y, max_x, max_y;
     public int max_score;
     private int total_score;
-    private int level;
+    public int level;
     private int target_score;
-    private bool do_spawn = true;
+    private bool do_spawn;
     private int max_random ;
+    private bool is_passui;
     // Start is called before the first frame update
 
     void Start()
     {
+        is_passui = false;
         level = data_controller.get_level();
         target_score = score_now + score_perlevel;
         score_now = data_controller.get_score();
-
-
+        buff_control();
+        news_controller();
+        do_spawn = true;
         min_x = top_left.transform.position.x;
         max_x = bot_right.transform.position.x;
         min_y = top_left.transform.position.y;
         max_y = bot_right.transform.position.y;
-        max_random = 20;
         fish_table = new GameObject[] { fish_0, fish_1 , fish_2 , fish_3 };
         time_remaining = time_perlevel;
         target_score = level * score_perlevel;
@@ -53,16 +55,36 @@ public class game_controller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (time_remaining <= 0) level_controll();
-        if (time_remaining >= time_perlevel) news_controller();
-        if(do_spawn) spwan_fish();
+        if (time_remaining <= 0 && !is_passui) level_controll();
+        if (total_score < 10) do_spawn = true;
+        if (do_spawn) spwan_fish();
         time_control();
-        score_control();
+        if (!is_passui) score_control();
  
+    }
+    void buff_control()
+	{
+        //Debug.Log("getting buffs");
+        //Debug.Log("\n buff1 is" + data_controller.get_buff(1));
+        //Debug.Log("\n buff2 is" + data_controller.get_buff(2));
+        //Debug.Log("\n buff3 is" + data_controller.get_buff(3));
+		if (data_controller.get_buff(1))
+		{
+            rb_boat.gameObject.GetComponent<boat_controller>().set_buff(1);
+		}
+        if (data_controller.get_buff(2))
+        {
+            rb_boat.gameObject.GetComponent<boat_controller>().set_buff(2);
+        }
+        if (data_controller.get_buff(3))
+        {
+            rb_boat.gameObject.GetComponent<boat_controller>().set_buff(3);
+        }
+
     }
     void news_controller()
 	{
-        //Debug.Log("news");
+        //Debug.Log("news"+ level);
         if(level == 1)
 		{
             main_ui.GetComponent<main_ui_controller>().new_feature(1);
@@ -81,7 +103,12 @@ public class game_controller : MonoBehaviour
         {
             max_random = 140;
             main_ui.GetComponent<main_ui_controller>().new_feature(4);
+		}
+        if(level > 4)
+		{
+            max_random = 140;
         }
+	
     }
     void level_controll()
 	{
@@ -95,11 +122,12 @@ public class game_controller : MonoBehaviour
 		}
 		else
 		{
-
-            level += 1;
-            data_controller.set_level(level);
-            data_controller.set_score(score_now);
-            SceneManager.LoadScene("main");
+            data_controller.set_buff(1, false);
+            data_controller.set_buff(2, false);
+            data_controller.set_buff(3, false);
+            main_ui.GetComponent<main_ui_controller>().set_nextScore((level + 1) * score_perlevel);
+            main_ui.GetComponent<main_ui_controller>().pass_level(level,score_now);
+            is_passui = true;
         }
 
 	}
@@ -115,6 +143,7 @@ public class game_controller : MonoBehaviour
     }
     void spwan_fish()
 	{
+        
         int index_fish = Random.Range(0, max_random);
         if (index_fish < 50) index_fish = 0;
         else if (index_fish < 90) index_fish = 1;
@@ -149,7 +178,8 @@ public class game_controller : MonoBehaviour
 		else
 		{
             do_spawn = false;
-		}
+            
+        }
        
     }
     private Vector3 random_position()

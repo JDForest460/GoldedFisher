@@ -81,7 +81,7 @@ public class fish_controller_topdown : MonoBehaviour
             rb_fish.velocity = new Vector2(rb_fish.velocity.x,-fish_speed  * Time.fixedDeltaTime);
 
             //Debug.Log(-fish_speed + rand_speed);
-            if (rb_fish.transform.position.y < left_x)
+            if (rb_fish.transform.position.y <= bot_y)
             {
             
                 go_down = false;
@@ -92,7 +92,7 @@ public class fish_controller_topdown : MonoBehaviour
 
             rb_fish.velocity = new Vector2(rb_fish.velocity.x,fish_speed  * Time.fixedDeltaTime);
             //Debug.Log(-fish_speed + rand_speed);
-            if (rb_fish.transform.position.x > right_x)
+            if (rb_fish.transform.position.y >= top_y )
             {
              
                 go_down = true;
