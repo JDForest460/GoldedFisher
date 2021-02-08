@@ -15,6 +15,9 @@ public class boat_controller : MonoBehaviour
     public Sprite bow_1;
     public Sprite bow_2;
     public SpriteRenderer sprite_bow;
+    public GameObject plane_buff_1;
+    public GameObject plane_buff_2;
+    public GameObject plane_buff_3;
     public float bow_rotate_speed;
     public float bow_shot_speed;
     public float max_line_len;
@@ -33,7 +36,7 @@ public class boat_controller : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        line_len = 1;
+        line_len = 0;
         get_PuseButtonArea();
     }
 
@@ -60,6 +63,14 @@ public class boat_controller : MonoBehaviour
         }
  
     }
+    public float get_line_len()
+	{
+        return line_len;
+	}
+    public float get_max_line_len()
+	{
+        return max_line_len;
+	}
     void pull_bow()
 	{
         if (line_len <= max_line_len)
@@ -196,7 +207,7 @@ public class boat_controller : MonoBehaviour
                 rb_hook.transform.localPosition = position_before_shoot;
                 is_pull = false;
                 //stop_rotate = false;
-                line_len = 1;
+                line_len = 0;
             }
         }
     }
@@ -222,16 +233,19 @@ public class boat_controller : MonoBehaviour
         if (which == 1) // speed buff
         {
             //Debug.Log("buy buff_speed");
+            plane_buff_1.SetActive(true);
             bow_shot_speed = 2 * bow_shot_speed;
         }
         if (which == 2) // size buff
         {
             //Debug.Log("buy buff_size");
+            plane_buff_2.SetActive(true);
             rb_hook.transform.localScale = new Vector2(1.5f, 1.5f);
         }
         if (which == 3) // power buff
         {
             //Debug.Log("buy buff_power");
+            plane_buff_3.SetActive(true);
             pull_bow_force = 2 * pull_bow_force;
         }
     }

@@ -7,13 +7,13 @@ using UnityEngine.UI;
 public class game_controller : MonoBehaviour
 {
     public Text text_time;
-    public Text text_score;
     public Text text_information;
     public GameObject game_manage;
     public GameObject fish_0;
     public GameObject fish_1;
     public GameObject fish_2;
     public GameObject fish_3;
+    public GameObject fish_4;
     public Rigidbody2D rb_boat;
     public GameObject main_ui;
     private GameObject[] fish_table;
@@ -36,7 +36,6 @@ public class game_controller : MonoBehaviour
     {
         is_passui = false;
         level = data_controller.get_level();
-        target_score = score_now + score_perlevel;
         score_now = data_controller.get_score();
         buff_control();
         news_controller();
@@ -45,7 +44,7 @@ public class game_controller : MonoBehaviour
         max_x = bot_right.transform.position.x;
         min_y = top_left.transform.position.y;
         max_y = bot_right.transform.position.y;
-        fish_table = new GameObject[] { fish_0, fish_1 , fish_2 , fish_3 };
+        fish_table = new GameObject[] { fish_0, fish_1 , fish_2 , fish_3,fish_4 };
         time_remaining = time_perlevel;
         target_score = level * score_perlevel;
 
@@ -104,9 +103,14 @@ public class game_controller : MonoBehaviour
             max_random = 140;
             main_ui.GetComponent<main_ui_controller>().new_feature(4);
 		}
-        if(level > 4)
+        if (level == 5)
+        {
+            max_random = 160;
+            main_ui.GetComponent<main_ui_controller>().new_feature(5);
+        }
+            if (level > 4)
 		{
-            max_random = 140;
+            max_random = 160;
         }
 	
     }
@@ -148,7 +152,8 @@ public class game_controller : MonoBehaviour
         if (index_fish < 50) index_fish = 0;
         else if (index_fish < 90) index_fish = 1;
         else if (index_fish < 120) index_fish = 2;
-        else index_fish = 3;
+        else if (index_fish < 140) index_fish = 3;
+        else index_fish = 4;
 
         
         if (total_score <= max_score)
@@ -157,24 +162,38 @@ public class game_controller : MonoBehaviour
             Vector3 new_position = random_position();
             GameObject new_fish =  Instantiate(fish_table[index_fish], new_position, Quaternion.identity);
             //increae currence total score
+            if (index_fish == 0) total_score += fish_table[index_fish].GetComponent<fish_controller>().fish_value;
             if (index_fish == 1) total_score += fish_table[index_fish].GetComponent<fish_controller_topdown>().fish_value;
-            else if (index_fish == 2) total_score += fish_table[index_fish].GetComponent<fish_controller_bigsmall>().fish_value;
-            else total_score += fish_table[index_fish].GetComponent<fish_controller>().fish_value;
+            if (index_fish == 2) total_score += fish_table[index_fish].GetComponent<fish_controller_bigsmall>().fish_value;
+            if (index_fish == 3) total_score += fish_table[index_fish].GetComponent<fish_controller>().fish_value;
+            if (index_fish == 4) total_score += fish_table[index_fish].GetComponent<fish_controller_squid>().fish_value;
 
+            if (index_fish == 0)
+            {
+                new_fish.GetComponent<fish_controller>().rb_boat = rb_boat;
+                new_fish.GetComponent<fish_controller>().game_manage = game_manage;
+            }
             if (index_fish == 1)
             {
                 new_fish.GetComponent<fish_controller_topdown>().rb_boat = rb_boat;
                 new_fish.GetComponent<fish_controller_topdown>().game_manage = game_manage;
             }
-            else if (index_fish == 2)
+            if (index_fish == 2)
             {
                 new_fish.GetComponent<fish_controller_bigsmall>().rb_boat = rb_boat;
                 new_fish.GetComponent<fish_controller_bigsmall>().game_manage = game_manage;
-            } else {
+            } 
+            if (index_fish == 3)
+            {
                 new_fish.GetComponent<fish_controller>().rb_boat = rb_boat;
                 new_fish.GetComponent<fish_controller>().game_manage = game_manage;
             }
-		}
+            if (index_fish == 4)
+            {
+                new_fish.GetComponent<fish_controller_squid>().rb_boat = rb_boat;
+                new_fish.GetComponent<fish_controller_squid>().game_manage = game_manage;
+            }
+        }
 		else
 		{
             do_spawn = false;
@@ -191,8 +210,17 @@ public class game_controller : MonoBehaviour
 	}
     void score_control()
     {
-       text_score.text = score_now.ToString();
+
+        main_ui.GetComponent<main_ui_controller>().update_scoretext();
     }
+    public int get_scorenow()
+	{
+        return score_now;
+	}
+    public int get_nextscore()
+	{
+        return target_score;
+	}
     public void add_score(int new_score)
     {
         score_now += new_score;

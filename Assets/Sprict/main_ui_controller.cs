@@ -20,22 +20,27 @@ public class main_ui_controller : MonoBehaviour
     public GameObject news_RedFish;
     public GameObject news_PufferFish;
     public GameObject news_swordFish;
+    public GameObject news_squidFish;
     public Button button_nextlevel;
     public Button buy1, buy2, buy3;
     public Image image_good1,image_good2,image_good3;
     public GameObject ui_text;
     public Text text_scoreleft;
     public Text text_ScoreNextLevel;
+    public Text text_score;
+    public Text text_level;
     public Sprite Sprite_sold1;
     public Sprite Sprite_sold2;
     public Sprite Sprite_sold3;
     public GameObject plane_NoEnoughScore;
     public Button button_NoEnoughScore;
+    public Slider slider_force;
     private string news_name;
     // Start is called before the first frame update
     void Start()
     {
         //new_feature(1);
+        text_level.text = data_controller.get_level().ToString();
         ui_menu.SetActive(false);
         button_puse.onClick.AddListener(click_puse);
         button_resue.onClick.AddListener(click_resue);
@@ -50,7 +55,7 @@ public class main_ui_controller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        set_SliderForce();
     }
     public void pass_level(int level,int score_now)
 	{
@@ -67,6 +72,11 @@ public class main_ui_controller : MonoBehaviour
         
 
     }
+    public void set_SliderForce()
+	{
+        slider_force.value = boat.GetComponent<boat_controller>().get_line_len() / boat.GetComponent<boat_controller>().get_max_line_len();
+
+    }
     private void click_close()
 	{
         plane_NoEnoughScore.SetActive(false);
@@ -79,7 +89,7 @@ public class main_ui_controller : MonoBehaviour
         Time.timeScale = 1;
         SceneManager.LoadScene("main");
     }
-        private void click_puse()
+    private void click_puse()
     {
         //Debug.Log("puse");
         ui_button_puse.SetActive(false);
@@ -114,7 +124,8 @@ public class main_ui_controller : MonoBehaviour
     private void update_score()
 	{
         text_scoreleft.text = data_controller.get_score().ToString();
-	}
+
+    }
     private void click_buy1()
     {
 		if (!data_controller.get_buff(1) && data_controller.get_score() > 10)
@@ -160,7 +171,10 @@ public class main_ui_controller : MonoBehaviour
             Debug.Log("cant buy");
         }
     }
-
+    public void update_scoretext()
+	{
+        text_score.text = game_manage.GetComponent<game_controller>().get_scorenow().ToString() + "/" + game_manage.GetComponent<game_controller>().get_nextscore().ToString();
+    }
     public void new_feature(int which)
 	{
         Time.timeScale = 0;
@@ -199,7 +213,15 @@ public class main_ui_controller : MonoBehaviour
             Button new_continue_button = new_feature.GetComponentInChildren<Button>();
             new_continue_button.onClick.AddListener(click_continue);
         }
-    
+        if (which == 5)
+        {
+            news_name = "news_SquidFish(Clone)";
+            GameObject new_feature = Instantiate(news_squidFish, news_poistion.position, Quaternion.identity);
+            new_feature.transform.SetParent(main_ui.transform, false);
+            Button new_continue_button = new_feature.GetComponentInChildren<Button>();
+            new_continue_button.onClick.AddListener(click_continue);
+        }
+
     }
     public void set_nextScore(int i)
 	{
